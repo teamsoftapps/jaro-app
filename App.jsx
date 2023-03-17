@@ -26,12 +26,11 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 import loginBackground from './src/assets/images/login-background.png';
-import LoginScreen from "./src/screens/Login/LoginScreen"
+import Dashboard from './src/screens/Dashboard/Dashboard';
+import LoginScreen from './src/screens/Login/LoginScreen';
 
 function App() {
-  return (
-   <LoginScreen/>
-  );
+  return <Dashboard />;
 }
 
 const styles = StyleSheet.create({});
