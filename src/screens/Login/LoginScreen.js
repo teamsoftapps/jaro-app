@@ -8,126 +8,114 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import login_bg from '../../assets/images/login-background.png';
 import Logo from '../../assets/images/Logo.png';
 import location from '../../assets/images/location.png';
 import input_bg from '../../assets/images/input_bg.png';
 import order from '../../assets/images/order-icon.png';
-import password from "../../assets/images/pass_icon.png"
+import password from '../../assets/images/pass_icon.png';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const LoginScreen = () => {
+const LoginScreen = ({navigation}) => {
+  const [loginData, setLoginData] = useState({
+    orderNumber: '',
+    password: '',
+  });
+  const [error, setError] = useState(null);
+  const handleInput = async e => {
+    e.preventDefault();
+    // console.log('loginData>>>', loginData);
+
+    const {data} = await axios.post(
+      'http://10.0.2.2:4001/api/uploadCsv/appLogin',
+      loginData,
+    );
+
+    console.log('data', data?.data);
+
+    if (data && data?.data) {
+      await AsyncStorage.setItem('userData', JSON.stringify(data?.data));
+    }
+
+    navigation.navigate('dashboard', {
+      userData: data?.data[0],
+    });
+
+    resetForm();
+  };
+
+  const resetForm = () => {
+    setLoginData({
+      orderNumber: '',
+      password: '',
+    });
+  };
   return (
     <ScrollView>
-    <ImageBackground  className="flex-1 w-full h-full relative" source={login_bg}>
-      <Image className="self-center items-center mt-20" style={styles.logo} source={Logo} />
-      <Image className="self-center mt-3" style={styles.location} source={location} />
+      <ImageBackground
+        className="flex-1 w-full h-full relative"
+        source={login_bg}>
+        <Image className="self-center items-center mt-20" source={Logo} />
+        <Image className="self-center mt-3" source={location} />
 
-      <ImageBackground className="-mt-36" style={styles.input_bg} source={input_bg}>
-        <View style={styles.container}>
-          <Text style={styles.text}>Login</Text>
-          <Text>Please enter your login credential</Text>
-          <View style={styles.inputContainer}>
-            <Text style={styles.label} >Order Number</Text>
-            <View style={styles.inputBox}>
-              <Image source={order} />
-              <TextInput
-                style={styles.input}
-                placeholder="#123456"
-                keyboardType="numeric"
-              />
+        <ImageBackground className="-mt-36  w-full h-[100vh]" source={input_bg}>
+          <View className="w-9/12 ml-auto mr-auto mt-24">
+            <Text className="text-[#000000] text-[29px] font-semibold ">
+              Login
+            </Text>
+            <Text>Please enter your login credential</Text>
+            <View className="mt-2.5">
+              <Text className="text-[#000000] text-[13px] font-medium">
+                Order Number
+              </Text>
+              <View className="mt-2.5 flex flex-row items-center px-4 bg-[#EEEEEE] gap-x-2 rounded-lg">
+                <Image source={order} />
+                <TextInput
+                  className="w-full"
+                  value={loginData.orderNumber}
+                  onChangeText={val =>
+                    setLoginData({...loginData, orderNumber: val})
+                  }
+                  placeholder="#123456"
+                  keyboardType="numeric"
+                />
+              </View>
             </View>
-          </View>
-          <View style={styles.inputContainer}>
-            <Text style={styles.label} >Password</Text>
-            <View style={styles.inputBox}>
-              <Image source={password} />
-              <TextInput
-                style={styles.input}
-                secureTextEntry={true}
-                placeholder="#123456"
-              />
+            <View className="mt-2.5">
+              <Text className="text-[#000000] text-[13px] font-medium">
+                Password
+              </Text>
+              <View className="mt-2.5 flex flex-row items-center px-4 bg-[#EEEEEE] gap-x-2 rounded-lg">
+                <Image source={password} />
+                <TextInput
+                  className="w-full  mt-1"
+                  value={loginData.password}
+                  secureTextEntry={true}
+                  placeholder="***********"
+                  onChangeText={val =>
+                    setLoginData({...loginData, password: val})
+                  }
+                />
+              </View>
             </View>
+            <TouchableOpacity
+              onPress={handleInput}
+              className="mt-7 w-[70%] justify-center mr-auto ml-auto bg-[#970000] h-12 rounded">
+              <Text className="self-center text-[18px] text-white">Login</Text>
+            </TouchableOpacity>
+            <Text className="self-center mt-1.5 text-red-700">{error}</Text>
+            <Text className="self-center mt-1.5">
+              Terms Of Use Privacy Policy
+            </Text>
           </View>
-          <TouchableOpacity style={styles.loginBtn} >
-            <Text style={styles.loginTxt} >Login</Text>
-          </TouchableOpacity>
-          <Text style={{alignSelf:"center",marginTop:5}} >Terms Of Use Privacy Policy</Text>
-        </View>
+        </ImageBackground>
       </ImageBackground>
-    </ImageBackground>
     </ScrollView>
   );
 };
 
 export default LoginScreen;
 
-const styles = StyleSheet.create({
-  // bg: {
-  //   flex: 1,
-  //   width: '100%',
-  //   height: '100%',
-  //   position: 'relative',
-  // },
-  // logo: {
-  //   alignSelf: 'center',
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  //   marginTop: 80,
-  // },
-  // location: {
-  //   marginTop: 20,
-  //   alignSelf: 'center',
-  // },
-  input_bg: {
-    position: 'relative',
-    marginTop: -150,
-    width: '100%',
-    height: '100%',
-  },
-  container: {
-
-    width: '80%',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    marginTop: 100,
-  },
-  text: {
-    fontSize:29,
-    fontWeight:600,
-      color:"#000000"
-  },
-  label:{
-color:"#000000",
-fontSize:13,
-fontWeight:500
-  },
-  inputBox: {
-    marginTop: 10,
-    display:"flex",
-    flexDirection:"row",
-    gap:15,
-    alignItems:"center",
-    backgroundColor:"#EEEEEE",
-    paddingHorizontal:15,
-    borderRadius:10
-  },
-  inputContainer: {
-    marginTop: 10,
-  },
-  loginBtn:{
-    marginTop:30,
-    width:"70%",
-    marginLeft:"auto",
-    marginRight:"auto",
-    backgroundColor:"#970000",
-    height:50,
-    justifyContent:"center",
-    borderRadius:5
-  },
-  loginTxt:{
-    alignSelf:"center",
-    color:"#fff",
-    fontSize:18
-  }
-});
+const styles = StyleSheet.create({});

@@ -1,38 +1,23 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+// import React from 'react';
+// import LoginScreen from './src/screens/Login/LoginScreen';
+// import {createStackNavigator} from '@react-navigation/stack';
+// import {NavigationContainer} from '@react-navigation/native';
+// import {SafeAreaProvider} from 'react-native-safe-area-context';
+// import SplashScreen from './src/screens/Splash/SplashScreen';
 
-import React from 'react';
-import {
-  ImageBackground,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+// const Stack = createStackNavigator();
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+// function App() {
+//   return (
+//     <NavigationContainer>
+//       <SafeAreaProvider>
+//         <Stack.Navigator screenOptions={{headerShown: false}}>
+//           <Stack.Screen name="splash" component={SplashScreen} />
+//           {/* <Stack.Screen name="login" component={LoginScreen} /> */}
+//         </Stack.Navigator>
+//       </SafeAreaProvider>
+//     </NavigationContainer>
+//   );
+// }
 
-import loginBackground from './src/assets/images/login-background.png';
-import Dashboard from './src/screens/Dashboard/Dashboard';
-import LoginScreen from './src/screens/Login/LoginScreen';
-
-function App() {
-  return <Dashboard />;
-}
-
-const styles = StyleSheet.create({});
-
-export default App;
+// export default App;

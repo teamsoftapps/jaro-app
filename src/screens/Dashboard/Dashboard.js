@@ -6,7 +6,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import logo from '../../assets/images/Logo.png';
 import truckIcon from '../../assets/images/truckIcon.png';
 import boxIcon from '../../assets/images/truckIcon.png';
@@ -16,8 +16,32 @@ import navigation from '../../assets/images/navigationIcon.png';
 import clock from '../../assets/images/clockIcon.png';
 import buldingImage from '../../assets/images/dashboard-building-bg.png';
 import logoutIcon from '../../assets/images/logoutIcon.png';
+import {Pressable} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Dashboard = () => {
+const Dashboard = userData => {
+  const navigation = useNavigation();
+
+  const [userInfo, setUserInfo] = useState();
+
+  // console.log('navigation', userData?.route?.params?.userData);
+  // console.log('navigation1', navigation);
+
+  useEffect(async () => {
+    setUserInfo(JSON.parse(await AsyncStorage.getItem('userData')));
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem('userData');
+      navigation.navigate('login');
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  console.log('userInfo', userInfo);
   return (
     <ScrollView className="min-h-scree">
       <View className="bg-white flex items-center pt-10 pb-5 rounded-bl-3xl rounded-br-3xl shadow-sm shadow-black">
@@ -50,14 +74,14 @@ const Dashboard = () => {
             <View>
               <Text className="text-[#808285] text-md">Order No.</Text>
               <Text className="text-[#A71E21] text-xl font-semibold">
-                #32145
+                #{userInfo?.orderNumber}
               </Text>
             </View>
 
             <View className="mt-[40%]">
               <Text className="text-[#808285] text-md">Pickup No.</Text>
               <Text className="text-[#A71E21] text-xl font-semibold">
-                #32145
+                #{userInfo?.pickupNumber}
               </Text>
             </View>
           </View>
@@ -83,9 +107,9 @@ const Dashboard = () => {
 
             <View className="ml-3 flex items-start">
               <Text className="text-[#343434] font-medium text-lg p-0 mt-[-2%]">
-                Los Angeles, Canifornia, USA
+                {userInfo?.location}
               </Text>
-              <Text>Los Angeles, Canifornia, USA</Text>
+              <Text>{userInfo?.location}</Text>
             </View>
           </View>
 
@@ -95,7 +119,7 @@ const Dashboard = () => {
             </View>
 
             <View className="ml-3 flex items-start">
-              <Text className="text-[#343434] font-medium text-lg p-0 mt-[-%]">
+              <Text className="text-[#343434] font-medium text-lg p-0 mt-[-9%]">
                 11:00pm
               </Text>
             </View>
@@ -103,15 +127,17 @@ const Dashboard = () => {
         </View>
       </View>
 
-      <View className="flex relative h-[40vh] mt-5 items-center ">
+      <View className="flex relative h-[40vh] mt-5 items-center">
         <View>
           <Image source={buldingImage} />
         </View>
 
         <View className="absolute flex w-full items-center  flex-col group">
-          <View className="flex bg-white justify-center h-[80] w-[80] items-center rounded-full">
+          <Pressable
+            onPress={handleLogout}
+            className="flex bg-white justify-center h-[80] w-[80] items-center rounded-full">
             <Image source={logoutIcon} />
-          </View>
+          </Pressable>
 
           <View className="flex items-center justify-center">
             <Text className="text-[#A39696]">
