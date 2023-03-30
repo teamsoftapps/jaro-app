@@ -12,6 +12,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import SplashScreen from './src/screens/Splash/SplashScreen';
 import Dashboard from './src/screens/Dashboard/Dashboard';
+import MapScreen from './src/screens/Map/MapScreen';
 
 const Stack = createStackNavigator();
 
@@ -23,6 +24,7 @@ function App() {
           <Stack.Screen name="splash" component={SplashScreen} />
           <Stack.Screen name="login" component={LoginScreen} />
           <Stack.Screen name="dashboard" component={Dashboard} />
+          <Stack.Screen name="map" component={MapScreen} />
         </Stack.Navigator>
       </SafeAreaProvider>
     </NavigationContainer>

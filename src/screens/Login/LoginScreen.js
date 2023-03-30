@@ -20,36 +20,41 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = ({navigation}) => {
   const [loginData, setLoginData] = useState({
-    orderNumber: '',
-    password: '',
+    orderNumber: null,
+    password: null,
   });
   const [error, setError] = useState(null);
+
   const handleInput = async e => {
     e.preventDefault();
     // console.log('loginData>>>', loginData);
+    setError(null);
 
-    const {data} = await axios.post(
-      'http://10.0.2.2:4001/api/uploadCsv/appLogin',
-      loginData,
-    );
+    try {
+      const {data} = await axios.post(
+        'http://10.0.2.2:4001/api/uploadCsv/appLogin',
+        loginData,
+      );
 
-    console.log('data', data?.data);
+      console.log('data', data?.data);
 
-    if (data && data?.data) {
-      await AsyncStorage.setItem('userData', JSON.stringify(data?.data));
+      if (data && data?.data) {
+        await AsyncStorage.setItem('userData', JSON.stringify(data?.data));
+        navigation.navigate('dashboard', {
+          userData: data?.data[0],
+        });
+      }
+
+      resetForm();
+    } catch (err) {
+      setError(err?.response?.data?.message);
     }
-
-    navigation.navigate('dashboard', {
-      userData: data?.data[0],
-    });
-
-    resetForm();
   };
 
   const resetForm = () => {
     setLoginData({
-      orderNumber: '',
-      password: '',
+      orderNumber: null,
+      password: null,
     });
   };
   return (
@@ -105,6 +110,9 @@ const LoginScreen = ({navigation}) => {
               className="mt-7 w-[70%] justify-center mr-auto ml-auto bg-[#970000] h-12 rounded">
               <Text className="self-center text-[18px] text-white">Login</Text>
             </TouchableOpacity>
+            {/* <Text className="self-center text-[18px] text-red-500">
+              {error}
+            </Text> */}
             <Text className="self-center mt-1.5 text-red-700">{error}</Text>
             <Text className="self-center mt-1.5">
               Terms Of Use Privacy Policy

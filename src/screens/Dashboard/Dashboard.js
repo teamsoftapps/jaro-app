@@ -105,12 +105,14 @@ const Dashboard = userData => {
               <Image source={navigation} />
             </View>
 
-            <View className="ml-3 flex items-start">
+            <Pressable
+              className="ml-3 flex items-start"
+              onPress={() => navigation.navigate('map')}>
               <Text className="text-[#343434] font-medium text-lg p-0 mt-[-2%]">
                 {userInfo?.location}
               </Text>
-              <Text>{userInfo?.location}</Text>
-            </View>
+              <Text>Click here to get and send location</Text>
+            </Pressable>
           </View>
 
           <View className="flex flex-row justify-self-start pl-5 mt-[-10%]">
