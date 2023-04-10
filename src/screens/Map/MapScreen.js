@@ -42,6 +42,7 @@ const MapScreen = ({navigation}) => {
   const [error, setError] = useState(null);
   const [locationEnable, setLocationEnable] = useState(false);
   const [isLocationSent, setIsLocationSent] = useState(false);
+  const [address, setAddress] = useState(null);
   // function to check permissions and get Location
   const getLocation = () => {
     const result = requestLocationPermission();
@@ -63,7 +64,6 @@ const MapScreen = ({navigation}) => {
         setLocationEnable(true);
       }
     });
-    console.log(location);
   };
 
   const [orderNumber, setOrderNumber] = useState(null);
@@ -74,26 +74,47 @@ const MapScreen = ({navigation}) => {
 
   // console.log('order number', location?.coords.longitude);
 
-  const sendLocation = async () => {
-    const payload = {
-      orderNumber: orderNumber.orderNumber,
-      driverCoordinates: location.coords,
-    };
+  const getAddress = async () => {
+    const {data} = await axios.get(
+      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.coords.latitude},${location.coords.longitude}&key=AIzaSyDOEmIN3iozgvHcPQqfM2eFyKx7uDFoCmk`,
+    );
+    if (data) {
+      console.log(data?.results[0]?.formatted_address);
+      setAddress(data?.results[0]?.formatted_address);
+    }
+  };
 
-    console.log('loginData>>>', location.coords.longitude);
+  const sendLocation = async () => {
+    const address = await axios.get(
+      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.coords.latitude},${location.coords.longitude}&key=AIzaSyDOEmIN3iozgvHcPQqfM2eFyKx7uDFoCmk`,
+    );
+
+    console.log('address', address?.data?.results[0]?.formatted_address);
+
+    if (address) {
+      const payload = {
+        orderNumber: orderNumber.orderNumber,
+        driverCoordinates: address?.data?.results[0]?.formatted_address,
+      };
+
+      console.log('map payload', payload);
+
+      const {data} = await axios.patch(
+        'https://jaro-backend.herokuapp.com/api/uploadCsv/driverLocation',
+        payload,
+      );
+
+      console.log('data', data);
+
+      if (data) {
+        setIsLocationSent(true);
+        setTimeout(() => {
+          navigation.navigate('dashboard');
+        }, 2000);
+      }
+    }
     // setError(null);
 
-    const {data} = await axios.patch(
-      'http://10.0.2.2:4001/api/uploadCsv/driverLocation',
-      payload,
-    );
-    console.log('data', data);
-    if (data) {
-      setIsLocationSent(true);
-      setTimeout(() => {
-        navigation.navigate('dashboard');
-      }, 2000);
-    }
     // resetForm();
   };
 
@@ -120,6 +141,7 @@ const MapScreen = ({navigation}) => {
       <Text className="text-black font-semibold text-md mb-4">
         Longitude: {location ? location.coords.longitude : null}
       </Text>
+
       <View
         style={{
           marginTop: 10,

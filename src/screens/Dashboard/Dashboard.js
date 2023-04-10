@@ -19,18 +19,36 @@ import logoutIcon from '../../assets/images/logoutIcon.png';
 import {Pressable} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 const Dashboard = userData => {
   const navigation = useNavigation();
 
+  const [userInfoStorage, setUserInfoStorage] = useState();
   const [userInfo, setUserInfo] = useState();
 
   // console.log('navigation', userData?.route?.params?.userData);
   // console.log('navigation1', navigation);
 
+  const getSingleUser = async id => {
+    const {data} = await axios.get(
+      `https://jaro-backend.herokuapp.com/api/uploadCsv/getSingleUser/${id}`,
+    );
+    if (data) {
+      console.log('data', data);
+      setUserInfo(data?.data);
+    }
+  };
+
   useEffect(async () => {
-    setUserInfo(JSON.parse(await AsyncStorage.getItem('userData')));
+    setUserInfoStorage(JSON.parse(await AsyncStorage.getItem('userData')));
   }, []);
+
+  useEffect(() => {
+    if (userInfoStorage) {
+      getSingleUser(userInfoStorage?.user?._id);
+    }
+  }, [userInfoStorage]);
 
   const handleLogout = async () => {
     try {
@@ -41,9 +59,12 @@ const Dashboard = userData => {
     }
   };
 
-  console.log('userInfo', userInfo);
+  // console.log('userInfo', userInfo);
+
+  console.log('user Info storage', userInfoStorage);
+  console.log('user info', userInfo);
   return (
-    <ScrollView className="min-h-scree">
+    <ScrollView className="flex-1 min-h-screen">
       <View className="bg-white flex items-center pt-10 pb-5 rounded-bl-3xl rounded-br-3xl shadow-sm shadow-black">
         <Image source={logo} style={{width: 180, height: 55}} />
       </View>
@@ -107,17 +128,18 @@ const Dashboard = userData => {
 
             <Pressable
               className="ml-3 flex items-start"
-              onPress={() => navigation.navigate('map')}>
+              // onPress={() => navigation.navigate('map')}
+            >
               <Text className="text-[#343434] font-medium text-lg p-0 mt-[-2%]">
                 {userInfo?.location}
               </Text>
-              <Text>Click here to get and send location</Text>
+              <Text className="p-0 m-0">{userInfo?.driverCoordinates}</Text>
             </Pressable>
           </View>
 
           <View className="flex flex-row justify-self-start pl-5 mt-[-10%]">
             <View>
-              <Image source={clock} wi />
+              <Image source={clock} />
             </View>
 
             <View className="ml-3 flex items-start">
@@ -131,7 +153,7 @@ const Dashboard = userData => {
 
       <View className="flex relative h-[40vh] mt-5 items-center">
         <View>
-          <Image source={buldingImage} />
+          <Image source={buldingImage} className="h-full" />
         </View>
 
         <View className="absolute flex w-full items-center  flex-col group">
