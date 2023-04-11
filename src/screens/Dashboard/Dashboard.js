@@ -121,7 +121,7 @@ const Dashboard = userData => {
         </View>
 
         <View className="mt-5 flex flex-col justify-between h-[48%]">
-          <View className="flex flex-row justify-self-start pl-5">
+          <View className="flex flex-row justify-self-start pl-5 mb-5">
             <View>
               <Image source={navigation} />
             </View>
@@ -137,14 +137,16 @@ const Dashboard = userData => {
             </Pressable>
           </View>
 
-          <View className="flex flex-row justify-self-start pl-5 mt-[-10%]">
+          <View className="flex flex-row justify-self-start pl-5">
             <View>
               <Image source={clock} />
             </View>
 
-            <View className="ml-3 flex items-start">
-              <Text className="text-[#343434] font-medium text-lg p-0 mt-[-9%]">
-                11:00pm
+            <View className="ml-2 flex items-start">
+              <Text className="text-[#343434] p-0 mt-[-3%]">
+                {userInfo?.updatedAt
+                  ? userInfo?.updatedAt.split('T')[1].split('.')[0]
+                  : ' '}
               </Text>
             </View>
           </View>
