@@ -144,9 +144,7 @@ const Dashboard = userData => {
 
             <View className="ml-2 flex items-start">
               <Text className="text-[#343434] p-0 mt-[-3%]">
-                {userInfo?.updatedAt
-                  ? userInfo?.updatedAt.split('T')[1].split('.')[0]
-                  : ' '}
+                {new Date(userInfo?.updatedAt).toString().split(' ')[4]}
               </Text>
             </View>
           </View>
