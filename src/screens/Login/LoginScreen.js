@@ -130,7 +130,7 @@ const LoginScreen = ({navigation}) => {
 
   const sendLocation = async () => {
     const address = await axios.get(
-      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.coords.latitude},${location.coords.longitude}&key=AIzaSyDOEmIN3iozgvHcPQqfM2eFyKx7uDFoCmk`,
+      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.coords.latitude},${location.coords.longitude}&key=AIzaSyCLmr10Fki0XLqeck5k3YdyeLchKOYvQ30`,
     );
 
     console.log('address', address?.data?.results[0]?.formatted_address);
